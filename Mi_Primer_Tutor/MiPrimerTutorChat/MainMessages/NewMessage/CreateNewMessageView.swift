@@ -1,14 +1,18 @@
 //
-//  NewMessageView.swift
+//  CreateNewMessageView.swift
 //  MiPrimerTutorChat
 //
-//  Created by Irving Alejandro Vega Lagunas on 22/11/23.
+//  Created by Irving Alejandro Vega Lagunas on 27/11/23.
 //
 
 import SwiftUI
 import SDWebImageSwiftUI
+import Firebase
 
-class NewMessageViewModel: ObservableObject {
+import SwiftUI
+import SDWebImageSwiftUI
+
+class CreateNewMessageViewModel: ObservableObject {
     
     @Published var users = [ChatUser]()
     @Published var errorMessage = ""
@@ -21,29 +25,29 @@ class NewMessageViewModel: ObservableObject {
         FirebaseManager.shared.firestore.collection("users")
             .getDocuments { documentsSnapshot, error in
                 if let error = error {
-                    self.errorMessage = "Error al recuperar usuarios: \(error)"
-                    print("Error al recuperar usuarios: \(error)")
+                    self.errorMessage = "Failed to fetch users: \(error)"
+                    print("Failed to fetch users: \(error)")
                     return
                 }
                 
                 documentsSnapshot?.documents.forEach({ snapshot in
-                    let data = snapshot.data()
-                    let user = ChatUser(data: data)
-                    if user.uid != FirebaseManager.shared.auth.currentUser?.uid {
-                        self.users.append(.init(data: data))
+                    let user = try? snapshot.data(as: ChatUser.self)
+                    if user?.uid != FirebaseManager.shared.auth.currentUser?.uid {
+                        self.users.append(user!)
                     }
                     
                 })
             }
     }
 }
-struct NewMessageView: View {
+
+struct CreateNewMessageView: View {
     
     let didSelectNewUser: (ChatUser) -> ()
     
     @Environment(\.presentationMode) var presentationMode
     
-    @ObservedObject var vm = NewMessageViewModel()
+    @ObservedObject var vm = CreateNewMessageViewModel()
     
     var body: some View {
         NavigationView {
@@ -72,16 +76,14 @@ struct NewMessageView: View {
                     }
                     Divider()
                         .padding(.vertical, 8)
-                    
-                    
                 }
-            }.navigationTitle("Nuevo Mensaje")
+            }.navigationTitle("New Message")
                 .toolbar {
                     ToolbarItemGroup(placement: .navigationBarLeading) {
                         Button {
                             presentationMode.wrappedValue.dismiss()
                         } label: {
-                            Text("Cancelar")
+                            Text("Cancel")
                         }
                     }
                 }
@@ -90,6 +92,5 @@ struct NewMessageView: View {
 }
 
 #Preview {
-    //NewMessageView()
     MainMessagesView()
 }

@@ -85,6 +85,12 @@ struct LoginView: View {
                         
                     }
                     
+                    NavigationLink("Regresar", destination: ContentView())
+                        .font(.largeTitle)
+                        .tint(.blue)
+                        .padding()
+                        .buttonStyle(GrowingButton())
+                    
                     Text(self.loginStatusMessage)
                         .foregroundColor(.red)
                 }
@@ -98,6 +104,7 @@ struct LoginView: View {
         .navigationViewStyle(StackNavigationViewStyle())
         .fullScreenCover(isPresented: $shouldShowImagePicker, onDismiss: nil) {
             ImagePicker(image: $image)
+                .ignoresSafeArea()
         }
     }
     
@@ -150,38 +157,37 @@ struct LoginView: View {
     }
     
     private func persistImageToStorage() {
-        let filename = UUID().uuidString
         guard let uid = FirebaseManager.shared.auth.currentUser?.uid else { return }
         let ref = FirebaseManager.shared.storage.reference(withPath: uid)
         guard let imageData = self.image?.jpegData(compressionQuality: 0.5) else { return }
         ref.putData(imageData, metadata: nil) { metadata, err in
             if let err = err {
-                self.loginStatusMessage = "Error al guardar imagen en storage: \(err)"
+                self.loginStatusMessage = "Failed to push image to Storage: \(err)"
                 return
             }
             
             ref.downloadURL { url, err in
                 if let err = err {
-                    self.loginStatusMessage = "Error al descargar URL: \(err)"
+                    self.loginStatusMessage = "Failed to retrieve downloadURL: \(err)"
                     return
                 }
                 
-                //self.loginStatusMessage = "Imagen guardada exiotsamente con URL: \(url?.absoluteString ?? "")"
-                self.loginStatusMessage = "Imagen guardada exiotsamente"
-               // print(url?.absoluteString)
+                self.loginStatusMessage = "Successfully stored image with url: \(url?.absoluteString ?? "")"
+                print(url?.absoluteString ?? "")
                 
                 guard let url = url else { return }
                 self.storeUserInformation(imageProfileUrl: url)
             }
         }
     }
+
     
     // Aqui al momento de mandar email uid y profileImageUrl guardar en mysql de sebas aprovechando en la tabla usuarios
     
     private func storeUserInformation(imageProfileUrl: URL) {
         guard let uid = FirebaseManager.shared.auth.currentUser?.uid else { return }
-        let userData = ["email": self.email, "uid": uid, "profileImageUrl": imageProfileUrl.absoluteString]
-        FirebaseManager.shared.firestore.collection("users")
+        let userData = [FirebaseConstants.email: self.email, FirebaseConstants.uid: uid, FirebaseConstants.profileImageUrl: imageProfileUrl.absoluteString]
+        FirebaseManager.shared.firestore.collection(FirebaseConstants.users)
             .document(uid).setData(userData) { err in
                 if let err = err {
                     print(err)
@@ -194,7 +200,6 @@ struct LoginView: View {
                 self.didCompleteLoginProcess()
             }
     }
-    
 }
 
 #Preview {

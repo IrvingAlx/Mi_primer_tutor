@@ -25,22 +25,10 @@ struct ContentView: View {
         NavigationView{
             VStack {
                 HStack{
-                    /*Image(systemName: "bitcoinsign.circle")
-                        .resizable()
-                        .frame(width: 56.0, height: 56.0)
-                        .imageScale(.large)
-                        .foregroundStyle(.blue)
-                        .padding()*/
                     Text("Mi Primer Tutor")
                         .font(.system(size: 36, weight: .heavy, design: .rounded))
                         .multilineTextAlignment(.center)
                         .padding()
-                    /*Image(systemName: "bitcoinsign.circle")
-                        .resizable()
-                        .frame(width: 56.0, height: 56.0)
-                        .imageScale(.large)
-                        .foregroundStyle(.blue)
-                        .padding()*/
                 }
                 Image(systemName: "graduationcap.fill")
                     .resizable()
@@ -50,20 +38,20 @@ struct ContentView: View {
                     .padding()
                     .foregroundStyle(.blue)
                 
-                NavigationLink("Profesor", destination: LoginView(didCompleteLoginProcess: {}))
+                NavigationLink("Profesor", destination: MenuProfesorView())
                     .font(.largeTitle)
                     .tint(.blue)
                     .padding()
                     .buttonStyle(GrowingButton())
                     
                 
-                NavigationLink("Padres", destination: MainMessagesView())
+                NavigationLink("Padres", destination: MenuPadresView()) // MainMessagesView()
                     .font(.largeTitle)
                     .tint(.blue)
                     .padding()
                     .buttonStyle(GrowingButton())
                 
-                NavigationLink("Alumno", destination: LoginView(didCompleteLoginProcess: {}))
+                NavigationLink("Alumno", destination: LoginAlumnoView()) // LoginView(didCompleteLoginProcess: {})
                     .font(.largeTitle)
                     .tint(.blue)
                     .padding()
