@@ -134,6 +134,15 @@
         "revision" : "07f7f26ded8df9645c072f220378879c4642e063",
         "version" : "1.25.1"
       }
+    },
+    {
+      "identity" : "swiftopenai",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SwiftBeta/SwiftOpenAI",
+      "state" : {
+        "revision" : "27ed3a1fdd8e431ae57d8e3697524e00b4e7da2c",
+        "version" : "1.2.0"
+      }
     }
   ],
   "version" : 2

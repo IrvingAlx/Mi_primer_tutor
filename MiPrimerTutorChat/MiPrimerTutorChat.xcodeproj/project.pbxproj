@@ -47,7 +47,6 @@
 		06C73AAF2B0BFA3500039B5C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 06C73AAE2B0BFA3500039B5C /* Assets.xcassets */; };
 		06C73AB22B0BFA3500039B5C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 06C73AB12B0BFA3500039B5C /* Preview Assets.xcassets */; };
 		06C73AB92B0BFBD200039B5C /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C73AB82B0BFBD200039B5C /* LoginView.swift */; };
-		06C73AF22B0C01AF00039B5C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 06C73AF12B0C01AF00039B5C /* GoogleService-Info.plist */; };
 		06C73AF42B0C0C3700039B5C /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C73AF32B0C0C3600039B5C /* ImagePicker.swift */; };
 		06EF1DDA2B13A42E0004FB34 /* MenuProfesorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EF1DD92B13A42E0004FB34 /* MenuProfesorView.swift */; };
 		06EF1DDF2B13A4730004FB34 /* MenuPadresView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EF1DDE2B13A4730004FB34 /* MenuPadresView.swift */; };
@@ -65,6 +64,10 @@
 		06EF1DFB2B13A6410004FB34 /* TutorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EF1DFA2B13A6410004FB34 /* TutorView.swift */; };
 		06EF1DFD2B13A6640004FB34 /* LoginAlumnoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EF1DFC2B13A6640004FB34 /* LoginAlumnoView.swift */; };
 		06EF1E042B13FCB90004FB34 /* FirebaseConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EF1E032B13FCB90004FB34 /* FirebaseConstants.swift */; };
+		86D642392B1659CF0046B107 /* SwiftOpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = 86D642382B1659CF0046B107 /* SwiftOpenAI */; };
+		86D6423B2B165B090046B107 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86D6423A2B165B090046B107 /* ViewModel.swift */; };
+		86D6423F2B165B920046B107 /* ConversationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86D6423E2B165B920046B107 /* ConversationView.swift */; };
+		86D642412B165B940046B107 /* TextMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86D642402B165B940046B107 /* TextMessageView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -81,7 +84,6 @@
 		06C73AAE2B0BFA3500039B5C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		06C73AB12B0BFA3500039B5C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		06C73AB82B0BFBD200039B5C /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
-		06C73AF12B0C01AF00039B5C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		06C73AF32B0C0C3600039B5C /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		06EF1DD92B13A42E0004FB34 /* MenuProfesorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuProfesorView.swift; sourceTree = "<group>"; };
 		06EF1DDE2B13A4730004FB34 /* MenuPadresView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuPadresView.swift; sourceTree = "<group>"; };
@@ -99,6 +101,9 @@
 		06EF1DFA2B13A6410004FB34 /* TutorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorView.swift; sourceTree = "<group>"; };
 		06EF1DFC2B13A6640004FB34 /* LoginAlumnoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginAlumnoView.swift; sourceTree = "<group>"; };
 		06EF1E032B13FCB90004FB34 /* FirebaseConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseConstants.swift; sourceTree = "<group>"; };
+		86D6423A2B165B090046B107 /* ViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
+		86D6423E2B165B920046B107 /* ConversationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationView.swift; sourceTree = "<group>"; };
+		86D642402B165B940046B107 /* TextMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextMessageView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +116,7 @@
 				06BB35AE2B153C4D0013D752 /* FirebaseInAppMessagingSwift-Beta in Frameworks */,
 				06BB35B42B153C4D0013D752 /* FirebaseMessaging in Frameworks */,
 				06BB35942B153C4D0013D752 /* FirebaseAppDistribution-Beta in Frameworks */,
+				86D642392B1659CF0046B107 /* SwiftOpenAI in Frameworks */,
 				06BB35982B153C4D0013D752 /* FirebaseAuthCombine-Community in Frameworks */,
 				06BB35A42B153C4D0013D752 /* FirebaseFirestoreCombine-Community in Frameworks */,
 				06BB358E2B153C4D0013D752 /* FirebaseAnalyticsSwift in Frameworks */,
@@ -213,7 +219,6 @@
 				06C73AF32B0C0C3600039B5C /* ImagePicker.swift */,
 				06C73AAE2B0BFA3500039B5C /* Assets.xcassets */,
 				06C73AB02B0BFA3500039B5C /* Preview Content */,
-				06C73AF12B0C01AF00039B5C /* GoogleService-Info.plist */,
 				06B4417F2B1550DB00A1A7CE /* ContentView.swift */,
 			);
 			path = MiPrimerTutorChat;
@@ -268,9 +273,20 @@
 				06EF1DF42B13A6010004FB34 /* InglesView.swift */,
 				06EF1DF62B13A61F0004FB34 /* MatematicasView.swift */,
 				06EF1DF82B13A6300004FB34 /* GeneralView.swift */,
-				06EF1DFA2B13A6410004FB34 /* TutorView.swift */,
+				86D642362B1657B20046B107 /* TutorViews */,
 			);
 			path = Alumno;
+			sourceTree = "<group>";
+		};
+		86D642362B1657B20046B107 /* TutorViews */ = {
+			isa = PBXGroup;
+			children = (
+				86D6423A2B165B090046B107 /* ViewModel.swift */,
+				06EF1DFA2B13A6410004FB34 /* TutorView.swift */,
+				86D6423E2B165B920046B107 /* ConversationView.swift */,
+				86D642402B165B940046B107 /* TextMessageView.swift */,
+			);
+			path = TutorViews;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -318,6 +334,7 @@
 				06BB35B92B153C4D0013D752 /* FirebaseRemoteConfigSwift */,
 				06BB35BB2B153C4D0013D752 /* FirebaseStorage */,
 				06BB35BD2B153C4D0013D752 /* FirebaseStorageCombine-Community */,
+				86D642382B1659CF0046B107 /* SwiftOpenAI */,
 			);
 			productName = MiPrimerTutorChat;
 			productReference = 06C73AA72B0BFA3200039B5C /* MiPrimerTutorChat.app */;
@@ -350,6 +367,7 @@
 			packageReferences = (
 				066633EB2B0E8B2100259AF7 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				06BB35882B153C4D0013D752 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				86D642372B1659CF0046B107 /* XCRemoteSwiftPackageReference "SwiftOpenAI" */,
 			);
 			productRefGroup = 06C73AA82B0BFA3200039B5C /* Products */;
 			projectDirPath = "";
@@ -367,7 +385,6 @@
 			files = (
 				06C73AB22B0BFA3500039B5C /* Preview Assets.xcassets in Resources */,
 				06C73AAF2B0BFA3500039B5C /* Assets.xcassets in Resources */,
-				06C73AF22B0C01AF00039B5C /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,17 +401,20 @@
 				063DF3912B0EAB6700C77C15 /* ChatLogView.swift in Sources */,
 				06EF1DFD2B13A6640004FB34 /* LoginAlumnoView.swift in Sources */,
 				06EF1DF12B13A5C80004FB34 /* ProgresoAlumnosView.swift in Sources */,
+				86D6423B2B165B090046B107 /* ViewModel.swift in Sources */,
 				06EF1DE92B13A5280004FB34 /* ProgresoAlumnoView.swift in Sources */,
 				06EF1DE12B13A48B0004FB34 /* MenuAlumnoView.swift in Sources */,
 				06EF1DF72B13A61F0004FB34 /* MatematicasView.swift in Sources */,
 				06EF1DF52B13A6010004FB34 /* InglesView.swift in Sources */,
 				06BB35852B1529800013D752 /* CreateNewMessageView.swift in Sources */,
+				86D6423F2B165B920046B107 /* ConversationView.swift in Sources */,
 				066633EA2B0E890700259AF7 /* FirebaseManager.swift in Sources */,
 				06BB35812B1517C30013D752 /* RecentMessage.swift in Sources */,
 				06EF1DE52B13A5080004FB34 /* ListaAlumnosView.swift in Sources */,
 				06B441802B1550DB00A1A7CE /* ContentView.swift in Sources */,
 				06EF1DDF2B13A4730004FB34 /* MenuPadresView.swift in Sources */,
 				06C73AB92B0BFBD200039B5C /* LoginView.swift in Sources */,
+				86D642412B165B940046B107 /* TextMessageView.swift in Sources */,
 				06EF1DED2B13A5630004FB34 /* AltaAlumunoView.swift in Sources */,
 				06EF1DF32B13A5F00004FB34 /* EspanolView.swift in Sources */,
 				06BB35832B15180C0013D752 /* ChatMessage.swift in Sources */,
@@ -626,6 +646,14 @@
 				minimumVersion = 10.18.0;
 			};
 		};
+		86D642372B1659CF0046B107 /* XCRemoteSwiftPackageReference "SwiftOpenAI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftBeta/SwiftOpenAI";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -768,6 +796,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 06BB35882B153C4D0013D752 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseStorageCombine-Community";
+		};
+		86D642382B1659CF0046B107 /* SwiftOpenAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 86D642372B1659CF0046B107 /* XCRemoteSwiftPackageReference "SwiftOpenAI" */;
+			productName = SwiftOpenAI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

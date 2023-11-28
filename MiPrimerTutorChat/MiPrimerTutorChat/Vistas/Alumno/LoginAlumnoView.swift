@@ -32,7 +32,7 @@ struct LoginAlumnoView: View {
             }
             .padding(20)
             HStack{
-                TextField("Contraseña", text: $password)
+                SecureField("Contraseña", text: $password)
                     .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
             }
             .padding(20)
