@@ -8,9 +8,6 @@
 import SwiftUI
 import Firebase
 
-import SwiftUI
-import Firebase
-
 class ChatLogViewModel: ObservableObject {
     
     @Published var chatText = ""
