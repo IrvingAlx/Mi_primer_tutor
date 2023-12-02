@@ -15,6 +15,7 @@ struct EspanolView: View {
     @State private var preguntaActualIndex: Int = 0
     @State private var opcionSeleccionada: String?
     @State private var progreso: Double = 0
+    @State private var nivelActual: Int = 1 // Variable de estado para rastrear el nivel actual
 
     var body: some View {
         VStack {
@@ -23,14 +24,19 @@ struct EspanolView: View {
                 .multilineTextAlignment(.center)
                 .padding(20)
 
+            Text("Nivel \(nivelActual)") // Nuevo Text para mostrar el número de nivel actual
+
             if preguntas.isEmpty {
                 Text("Cargando preguntas...")
                     .padding()
             } else if preguntaActualIndex < preguntas.count {
                 cargarContenidoPregunta(pregunta: preguntas[preguntaActualIndex])
             } else {
-                Text("Fin de las preguntas")
+                Text("Fin de las preguntas del nivel \(nivelActual)")
                     .padding()
+                    .onAppear {
+                        pasarAlSiguienteNivel()
+                    }
             }
         }
         .onAppear {
@@ -114,11 +120,20 @@ struct EspanolView: View {
     func cargarSiguientePregunta() {
         preguntaActualIndex += 1
         opcionSeleccionada = nil // Restablecer la opción seleccionada al cargar una nueva pregunta
+
+        if preguntaActualIndex >= preguntas.count {
+            // Si hemos alcanzado el final de las preguntas del nivel actual, pasa al siguiente nivel
+            pasarAlSiguienteNivel()
+        }
     }
 
-    func obtenerPreguntasIniciales() {
-        // Realizar la solicitud HTTP para obtener las preguntas iniciales
-        guard let url = URL(string: "http://127.0.0.1:8000/preguntas_por_categoria?area=espanol&numero_nivel=1") else {
+    func pasarAlSiguienteNivel() {
+        nivelActual += 1
+        preguntaActualIndex = 0 // Reiniciar el índice de la pregunta al pasar al siguiente nivel
+        progreso = 0 // Reiniciar el progreso al pasar a un nuevo nivel
+
+        // Realizar la solicitud HTTP para obtener las preguntas del nuevo nivel
+        guard let url = URL(string: "http://127.0.0.1:8000/preguntas_por_categoria?area=espanol&numero_nivel=\(nivelActual)") else {
             return
         }
 
@@ -137,6 +152,28 @@ struct EspanolView: View {
             }
         }.resume()
     }
+
+    func obtenerPreguntasIniciales() {
+        // Realizar la solicitud HTTP para obtener las preguntas iniciales del primer nivel
+        guard let url = URL(string: "http://127.0.0.1:8000/preguntas_por_categoria?area=espanol&numero_nivel=1") else {
+            return
+        }
+
+        URLSession.shared.dataTask(with: url) { data, _, error in
+            if let data = data {
+                do {
+                    let respuesta = try JSONDecoder().decode(PreguntaResponse.self, from: data)
+                    DispatchQueue.main.async {
+                        self.preguntas = respuesta.preguntas
+                    }
+                } catch {
+                    print("Error al decodificar la respuesta: \(error)")
+                }
+            } else if let error = error {
+                print("Error en la solicitud HTTP : \(error)")
+            }
+        }.resume()
+    }
 }
 
 struct PreguntaResponse: Decodable {
@@ -148,6 +185,7 @@ struct Pregunta: Decodable {
     let nombre_imagen: String
     let respuesta_correcta: String
 }
+
 
 #Preview {
     EspanolView(idAlumno: 1)
