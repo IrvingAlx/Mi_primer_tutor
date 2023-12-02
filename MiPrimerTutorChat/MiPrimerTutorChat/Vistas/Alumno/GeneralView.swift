@@ -21,7 +21,7 @@ struct GeneralView: View {
                 .padding()
             }
             
-            Image(systemName: "basketball.fill")
+            Image(.general3)
                 .resizable()
                 .scaledToFit()
                 .imageScale(.medium)
@@ -35,9 +35,8 @@ struct GeneralView: View {
                 }
                 //NavigationLink("A)", destination: EspanolView())
                 .font(.largeTitle)
-                .tint(.blue)
                 .padding()
-                .buttonStyle(GrowingButton())
+                .buttonStyle(AButton())
                     
                 Button("B)") {
                     
@@ -45,7 +44,7 @@ struct GeneralView: View {
                 .font(.largeTitle)
                 .tint(.red)
                 .padding()
-                .buttonStyle(GrowingButton())
+                .buttonStyle(BButton())
             }
                 
             HStack{
@@ -55,7 +54,7 @@ struct GeneralView: View {
                 .font(.largeTitle)
                 .tint(.blue)
                 .padding()
-                .buttonStyle(GrowingButton())
+                .buttonStyle(CButton())
                 
                 Button("D)") {
                     
@@ -63,7 +62,7 @@ struct GeneralView: View {
                 .font(.largeTitle)
                 .tint(.blue)
                 .padding()
-                .buttonStyle(GrowingButton())
+                .buttonStyle(DButton())
             }
             HStack{
                 Button("Aceptar") {

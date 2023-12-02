@@ -15,18 +15,17 @@ struct InglesView: View {
                 .multilineTextAlignment(.center)
                 .padding(20)
             HStack{
-                Gauge(value: 1, in: 0...5) {
+                Gauge(value: 2, in: 0...5) {
                     Text("Progreso")
                 }
                 .padding()
             }
             
-            Image(systemName: "network")
+            Image(.ingles1)
                 .resizable()
                 .scaledToFit()
                 .imageScale(.medium)
                 .cornerRadius(10)
-                .padding()
                 .foregroundStyle(.blue)
             
             HStack{
@@ -35,17 +34,15 @@ struct InglesView: View {
                 }
                 //NavigationLink("A)", destination: EspanolView())
                 .font(.largeTitle)
-                .tint(.blue)
                 .padding()
-                .buttonStyle(GrowingButton())
+                .buttonStyle(AButton())
                     
                 Button("B)") {
                     
                 }
                 .font(.largeTitle)
-                .tint(.red)
                 .padding()
-                .buttonStyle(GrowingButton())
+                .buttonStyle(BButton())
             }
                 
             HStack{
@@ -53,17 +50,15 @@ struct InglesView: View {
                     
                 }
                 .font(.largeTitle)
-                .tint(.blue)
                 .padding()
-                .buttonStyle(GrowingButton())
+                .buttonStyle(CButton())
                 
                 Button("D)") {
                     
                 }
                 .font(.largeTitle)
-                .tint(.blue)
                 .padding()
-                .buttonStyle(GrowingButton())
+                .buttonStyle(DButton())
             }
             HStack{
                 Button("Aceptar") {

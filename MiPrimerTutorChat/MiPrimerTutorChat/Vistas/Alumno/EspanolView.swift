@@ -21,12 +21,11 @@ struct EspanolView: View {
                 .padding()
             }
             
-            Image(systemName: "pencil.tip.crop.circle")
+            Image(.espanol1)
                 .resizable()
                 .scaledToFit()
                 .imageScale(.medium)
                 .cornerRadius(10)
-                .padding()
                 .foregroundStyle(.blue)
             
             HStack{
@@ -35,17 +34,15 @@ struct EspanolView: View {
                 }
                 //NavigationLink("A)", destination: EspanolView())
                 .font(.largeTitle)
-                .tint(.blue)
                 .padding()
-                .buttonStyle(GrowingButton())
+                .buttonStyle(AButton())
                     
                 Button("B)") {
                     
                 }
                 .font(.largeTitle)
-                .tint(.red)
                 .padding()
-                .buttonStyle(GrowingButton())
+                .buttonStyle(BButton())
             }
                 
             HStack{
@@ -53,17 +50,15 @@ struct EspanolView: View {
                     
                 }
                 .font(.largeTitle)
-                .tint(.blue)
                 .padding()
-                .buttonStyle(GrowingButton())
+                .buttonStyle(CButton())
                 
                 Button("D)") {
                     
                 }
                 .font(.largeTitle)
-                .tint(.blue)
                 .padding()
-                .buttonStyle(GrowingButton())
+                .buttonStyle(DButton())
             }
             HStack{
                 Button("Aceptar") {
