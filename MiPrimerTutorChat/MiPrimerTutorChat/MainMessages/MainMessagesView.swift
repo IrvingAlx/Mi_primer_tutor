@@ -176,11 +176,11 @@ struct MainMessagesView: View {
             ])
         }
         .fullScreenCover(isPresented: $vm.isUserCurrentlyLoggedOut, onDismiss: nil) {
-            LoginView(didCompleteLoginProcess: {
+            LoginView(didCompleteLoginProcess: { userType in
                 self.vm.isUserCurrentlyLoggedOut = false
                 self.vm.fetchCurrentUser()
                 self.vm.fetchRecentMessages()
-            })
+            }, userType: .professor)
         }
     }
     

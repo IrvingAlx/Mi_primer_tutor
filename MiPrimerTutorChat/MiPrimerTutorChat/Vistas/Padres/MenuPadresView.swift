@@ -70,11 +70,20 @@ struct MenuPadresView: View {
                             .cancel()
                     ])
                 }
-                .fullScreenCover(isPresented: $vm.isUserCurrentlyLoggedOut, onDismiss: nil) {
-                    LoginView(didCompleteLoginProcess: {
-                        self.vm.isUserCurrentlyLoggedOut = false
-                        self.vm.fetchCurrentUser()
-                    })
+                .fullScreenCover(isPresented: $vm.isUserCurrentlyLoggedOut, onDismiss: nil){
+                    LoginView(didCompleteLoginProcess: { userType in
+                            self.vm.isUserCurrentlyLoggedOut = false
+                            self.vm.fetchCurrentUser()
+                            
+                            switch userType {
+                            case .professor:
+                                // Lógica específica para cuando el usuario es un profesor
+                                break
+                            case .parent:
+                                // Lógica específica para cuando el usuario es un padre
+                                break
+                            }
+                        }, userType: .parent) // Pasa el valor correspondiente
                 }
             }
         }

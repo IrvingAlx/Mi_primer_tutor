@@ -15,7 +15,7 @@ final class ViewModel: ObservableObject{
     
     @Published var currentMessage: MessageChatGPT = .init(text: "", role:.assistant)
     // API secreto de OpenAI
-    var openAI = SwiftOpenAI(apiKey: "")
+    var openAI = SwiftOpenAI(apiKey: "jGSGM28xjHLMDkZa110AT3BlbkFJRHSNCPJ2N2gIm6Ml3hky")
     
     // Método para enviar propmt
     func send(message: String) async {

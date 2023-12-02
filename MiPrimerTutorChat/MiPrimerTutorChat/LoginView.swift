@@ -11,13 +11,16 @@ import FirebaseStorage
 
 struct LoginView: View {
     
-    let didCompleteLoginProcess: () -> ()
-    
+    let didCompleteLoginProcess: (UserType) -> () // Modifica el tipo de la clausura para incluir un UserType
+
     @State private var isLoginMode = false
     @State private var email = ""
     @State private var password = ""
     
     @State var shouldShowImagePicker = false
+    
+    var userType: UserType // Nueva propiedad para indicar el tipo de usuario
+
     
     var body: some View {
         NavigationView {
@@ -130,7 +133,7 @@ struct LoginView: View {
             
             self.loginStatusMessage = "Usuario exitosamente Logeado: \(result?.user.uid ?? "")"
             
-            self.didCompleteLoginProcess()
+            self.didCompleteLoginProcess(.professor)
         }
     }
     
@@ -148,11 +151,41 @@ struct LoginView: View {
                 return
             }
             
+            guard let uid = result?.user.uid else {
+                self.loginStatusMessage = "Error al obtener UID del usuario creado"
+                return
+            }
+            
             print("Usuario creado exitosamente: \(result?.user.uid ?? "")")
             
             self.loginStatusMessage = "Usuario creado exitosamente: \(result?.user.uid ?? "")"
             
             self.persistImageToStorage()
+            
+            // Datos a enviar al servidor Flask
+            let userData = [
+                "email": email,
+                "uid": uid,
+                "contrasena": password,
+                "tipo_usuario": userType == .professor ? "profesor" : "padre"
+            ]
+
+            // Realizar la solicitud al servidor Flask
+            guard let url = URL(string: "http://127.0.0.1:8000/crear_usuario") else { return }
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: userData)
+            } catch {
+                print("Error al convertir datos a JSON: \(error.localizedDescription)")
+                return
+            }
+
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                // Manejar la respuesta del servidor
+            }.resume()
         }
     }
     
@@ -180,7 +213,10 @@ struct LoginView: View {
             }
         }
     }
-
+    enum UserType {
+        case professor
+        case parent
+    }
     
     // Aqui al momento de mandar email uid y profileImageUrl guardar en mysql de sebas aprovechando en la tabla usuarios
     
@@ -197,14 +233,14 @@ struct LoginView: View {
                 
                 print("Success")
                 
-                self.didCompleteLoginProcess()
+                self.didCompleteLoginProcess(.professor)
             }
     }
 }
 
 #Preview {
-    LoginView(didCompleteLoginProcess:{
-        
-    })
+    LoginView(didCompleteLoginProcess: { userType in
+            // Puedes proporcionar un valor para userType aquí, por ejemplo .professor
+        }, userType: .professor)
         
 }
