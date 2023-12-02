@@ -11,9 +11,10 @@ import URLImage
 struct EspanolView: View {
     var idAlumno: Int
 
-    @State private var pregunta: Pregunta?
+    @State private var preguntas: [Pregunta] = []
+    @State private var preguntaActualIndex: Int = 0
     @State private var opcionSeleccionada: String?
-    @State private var progreso: Double = 0 // Variable de estado para rastrear el progreso
+    @State private var progreso: Double = 0
 
     var body: some View {
         VStack {
@@ -22,22 +23,25 @@ struct EspanolView: View {
                 .multilineTextAlignment(.center)
                 .padding(20)
 
-            if let pregunta = pregunta {
-                cargarContenidoPregunta(pregunta: pregunta)
+            if preguntas.isEmpty {
+                Text("Cargando preguntas...")
+                    .padding()
+            } else if preguntaActualIndex < preguntas.count {
+                cargarContenidoPregunta(pregunta: preguntas[preguntaActualIndex])
             } else {
-                Text("Cargando pregunta...")
+                Text("Fin de las preguntas")
                     .padding()
             }
         }
         .onAppear {
-            obtenerPreguntaInicial()
+            obtenerPreguntasIniciales()
         }
     }
 
     func cargarContenidoPregunta(pregunta: Pregunta) -> some View {
         VStack {
             HStack {
-                Gauge(value: progreso, in: 0...3) {
+                Gauge(value: progreso, in: 0...Double(preguntas.count)) {
                     Text("Progreso")
                 }
                 .padding()
@@ -103,11 +107,17 @@ struct EspanolView: View {
         opcionSeleccionada = opcion
         if opcion == correcta {
             progreso += 1 // Incrementar el progreso si la respuesta es correcta
+            cargarSiguientePregunta()
         }
     }
 
-    func obtenerPreguntaInicial() {
-        // Realizar la solicitud HTTP para obtener la pregunta inicial
+    func cargarSiguientePregunta() {
+        preguntaActualIndex += 1
+        opcionSeleccionada = nil // Restablecer la opción seleccionada al cargar una nueva pregunta
+    }
+
+    func obtenerPreguntasIniciales() {
+        // Realizar la solicitud HTTP para obtener las preguntas iniciales
         guard let url = URL(string: "http://127.0.0.1:8000/preguntas_por_categoria?area=espanol&numero_nivel=1") else {
             return
         }
@@ -116,14 +126,8 @@ struct EspanolView: View {
             if let data = data {
                 do {
                     let respuesta = try JSONDecoder().decode(PreguntaResponse.self, from: data)
-                    guard let pregunta = respuesta.preguntas.first else {
-                        print("No se encontraron preguntas en la respuesta")
-                        return
-                    }
-
                     DispatchQueue.main.async {
-                        self.pregunta = pregunta
-                        self.opcionSeleccionada = nil // Restablecer la opción seleccionada al cargar una nueva pregunta
+                        self.preguntas = respuesta.preguntas
                     }
                 } catch {
                     print("Error al decodificar la respuesta: \(error)")
@@ -135,7 +139,6 @@ struct EspanolView: View {
     }
 }
 
-
 struct PreguntaResponse: Decodable {
     let preguntas: [Pregunta]
 }
@@ -145,8 +148,6 @@ struct Pregunta: Decodable {
     let nombre_imagen: String
     let respuesta_correcta: String
 }
-
-
 
 #Preview {
     EspanolView(idAlumno: 1)
