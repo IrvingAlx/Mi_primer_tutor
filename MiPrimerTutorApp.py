@@ -83,6 +83,20 @@ def alta_alumno():
     else:
         return jsonify({'error': 'No se encontró un padre con el UID proporcionado'}), 404
 
+@app.route('/login_alumno', methods=['POST'])
+def login_alumno():
+    datos = request.get_json()
+    nombre_alumno = datos.get('nombre')
+
+    # Buscar el nombre del alumno en la tabla Alumnos
+    cursor.execute("SELECT id_alumno FROM Alumnos WHERE nombre = %s", (nombre_alumno,))
+    resultado_alumno = cursor.fetchone()
+
+    if resultado_alumno:
+        id_alumno = resultado_alumno['id_alumno']
+        return jsonify({'id_alumno': id_alumno})
+    else:
+        return jsonify({'message': 'No se encontró el alumno'}), 404
 
 if __name__ == '__main__':
     app.run(debug=True,port=8000)

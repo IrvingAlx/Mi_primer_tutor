@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS mi_primer_tutor;
-CREATE DATABASE mi_primer_tutor;
-USE mi_primer_tutor;
+DROP DATABASE IF EXISTS mi_primer_tutor2;
+CREATE DATABASE mi_primer_tutor2;
+USE mi_primer_tutor2;
 
 CREATE TABLE `Usuarios` (
   `id_usuario` VARCHAR(255),
@@ -32,7 +32,7 @@ CREATE TABLE `Profesores` (
 CREATE TABLE `Alumnos` (
   `id_alumno` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(100) NOT NULL,
-  `id_usuario` int NOT NULL,
+  `id_usuario` VARCHAR(255) NOT NULL,
   `id_padre` int DEFAULT NULL,
   `id_profesor` int DEFAULT NULL,
   PRIMARY KEY (`id_alumno`),

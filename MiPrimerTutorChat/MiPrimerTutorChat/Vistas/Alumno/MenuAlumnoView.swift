@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct MenuAlumnoView: View {
+    
+    var idAlumno: Int
+
+    
     var body: some View {
         VStack{
             Text("Menu Alumnos")
@@ -71,5 +75,5 @@ struct MenuAlumnoView: View {
 }
 
 #Preview {
-    MenuAlumnoView()
+    MenuAlumnoView(idAlumno: 1)
 }
