@@ -12,6 +12,7 @@ struct EspanolView: View {
     var idAlumno: Int
 
     @State private var pregunta: Pregunta?
+    @State private var opcionSeleccionada: String?
 
     var body: some View {
         VStack {
@@ -34,23 +35,23 @@ struct EspanolView: View {
 
     func cargarContenidoPregunta(pregunta: Pregunta) -> some View {
         VStack {
-            Image(pregunta.nombre_imagen)  // Asumiendo que el nombre de la imagen es el mismo que en el catálogo de activos
+            Image(pregunta.nombre_imagen)
                 .resizable()
                 .scaledToFit()
                 .imageScale(.medium)
                 .cornerRadius(10)
                 .padding()
-                        
+
             HStack {
                 Button("A)") {
-                    // Acciones cuando se selecciona A)
+                    seleccionarOpcion("a")
                 }
                 .font(.largeTitle)
                 .padding()
                 .buttonStyle(AButton())
 
                 Button("B)") {
-                    // Acciones cuando se selecciona B)
+                    seleccionarOpcion("b")
                 }
                 .font(.largeTitle)
                 .padding()
@@ -59,23 +60,26 @@ struct EspanolView: View {
 
             HStack {
                 Button("C)") {
-                    // Acciones cuando se selecciona C)
+                    seleccionarOpcion("c")
                 }
                 .font(.largeTitle)
                 .padding()
                 .buttonStyle(CButton())
 
                 Button("D)") {
-                    // Acciones cuando se selecciona D)
+                    seleccionarOpcion("d")
                 }
                 .font(.largeTitle)
                 .padding()
                 .buttonStyle(DButton())
             }
 
+            Text("Respuesta: \(opcionSeleccionada == pregunta.respuesta_correcta ? "Correcta" : "Incorrecta")")
+                .padding()
+
             HStack {
                 Button("Regresar") {
-                    // Acciones cuando se presiona Aceptar
+                    // Acciones cuando se presiona Regresar
                 }
                 .font(.largeTitle)
                 .tint(.blue)
@@ -84,6 +88,10 @@ struct EspanolView: View {
             }
         }
         .padding()
+    }
+
+    func seleccionarOpcion(_ opcion: String) {
+        opcionSeleccionada = opcion
     }
 
     func obtenerPreguntaInicial() {
@@ -103,6 +111,7 @@ struct EspanolView: View {
 
                     DispatchQueue.main.async {
                         self.pregunta = pregunta
+                        self.opcionSeleccionada = nil // Restablecer la opción seleccionada al cargar una nueva pregunta
                     }
                 } catch {
                     print("Error al decodificar la respuesta: \(error)")
