@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS mi_primer_tutor2;
-CREATE DATABASE mi_primer_tutor2;
-USE mi_primer_tutor2;
+DROP DATABASE IF EXISTS mi_primer_tutor3;
+CREATE DATABASE mi_primer_tutor3;
+USE mi_primer_tutor3;
 
 CREATE TABLE `Usuarios` (
   `id_usuario` VARCHAR(255),
@@ -13,7 +13,7 @@ CREATE TABLE `Usuarios` (
 CREATE TABLE `Padres` (
   `id_padre` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(100) NOT NULL,
-  `id_usuario` VARCHAR(255) NOT NULL,  -- Cambiado a VARCHAR(255)
+  `id_usuario` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id_padre`),
   KEY `id_usuario` (`id_usuario`),
   FOREIGN KEY (`id_usuario`) REFERENCES `Usuarios` (`id_usuario`) ON DELETE CASCADE
@@ -22,12 +22,11 @@ CREATE TABLE `Padres` (
 CREATE TABLE `Profesores` (
   `id_profesor` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(100) NOT NULL,
-  `id_usuario` VARCHAR(255) NOT NULL,  -- Cambiado a VARCHAR(255)
+  `id_usuario` VARCHAR(255) NOT NULL, 
   PRIMARY KEY (`id_profesor`),
   KEY `id_usuario` (`id_usuario`),
   FOREIGN KEY (`id_usuario`) REFERENCES `Usuarios` (`id_usuario`) ON DELETE CASCADE
-);
-  
+);  
 
 CREATE TABLE `Alumnos` (
   `id_alumno` int NOT NULL AUTO_INCREMENT,
@@ -56,16 +55,11 @@ CREATE TABLE `Preguntas` (
   `numero_pregunta` int NOT NULL,
   `nombre_imagen` varchar(100) NOT NULL,
   `respuesta_correcta` char(1) NOT NULL,
-  `respuesta_incorrecta_1` char(1) NOT NULL,
-  `respuesta_incorrecta_2` char(1) NOT NULL,
-  `respuesta_incorrecta_3` char(1) NOT NULL,
   `id_nivel` int NOT NULL,
   PRIMARY KEY (`id_pregunta`),
   KEY `id_nivel` (`id_nivel`),
   FOREIGN KEY (`id_nivel`) REFERENCES `Niveles` (`id_nivel`) ON DELETE CASCADE
 ); 
-
-
 
 CREATE TABLE `Puntuacion` (
   `id_puntuacion` int NOT NULL AUTO_INCREMENT,

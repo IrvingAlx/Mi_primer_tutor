@@ -17,7 +17,7 @@ conexion = mysql.connector.connect(
     host="localhost",
     port="3306",
     user="root",
-    database="mi_primer_tutor2"
+    database="mi_primer_tutor3"
 )
 
 cursor = conexion.cursor(dictionary=True)
@@ -120,6 +120,32 @@ def lista_alumnos():
         return jsonify({'alumnos': lista_alumnos})
     else:
         return jsonify({'error': 'No se encontró el profesor'}), 404
+
+@app.route('/preguntas_por_categoria', methods=['GET'])
+def preguntas_por_categoria():
+    # Obtener parámetros de la solicitud
+    area = request.args.get('area')
+    numero_nivel = request.args.get('numero_nivel')
+
+    # Buscar el id_nivel correspondiente a la categoría
+    cursor.execute("SELECT id_nivel FROM Niveles WHERE area = %s AND numero_nivel = %s", (area, numero_nivel))
+    resultado_nivel = cursor.fetchone()
+
+    if resultado_nivel:
+        id_nivel = resultado_nivel['id_nivel']
+
+        # Buscar las preguntas que tienen el id_nivel igual al id_nivel obtenido
+        cursor.execute("SELECT * FROM Preguntas WHERE id_nivel = %s", (id_nivel,))
+        resultado_preguntas = cursor.fetchall()
+
+        # Crear una lista de preguntas
+        lista_preguntas = [{'numero_pregunta': pregunta['numero_pregunta'],
+                            'nombre_imagen': pregunta['nombre_imagen'],
+                            'respuesta_correcta': pregunta['respuesta_correcta']} for pregunta in resultado_preguntas]
+
+        return jsonify({'preguntas': lista_preguntas})
+    else:
+        return jsonify({'error': 'No se encontró la categoría'}), 404
 
 if __name__ == '__main__':
     app.run(debug=True,port=8000)

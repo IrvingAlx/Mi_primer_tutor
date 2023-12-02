@@ -28,7 +28,7 @@ struct MenuAlumnoView: View {
                 .foregroundStyle(.blue)
             
             HStack{
-                NavigationLink("Español", destination: EspanolView())
+                NavigationLink("Español", destination: EspanolView(idAlumno: idAlumno))
                     .font(.system(size: 21, weight: .semibold))
                     .font(.largeTitle)
                     .tint(.blue)
