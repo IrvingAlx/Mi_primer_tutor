@@ -61,6 +61,27 @@ def crear_usuario():
 
     return jsonify({'message': 'Usuario creado correctamente'}), 201
 
+@app.route('/alta_alumno', methods=['POST'])
+def alta_alumno():
+    datos = request.get_json()
+    uid = datos.get('uid')
+    nombre_alumno = datos.get('nombre')
+
+    # Buscar en la tabla Padres para obtener el id_padre correspondiente al uid
+    cursor.execute("SELECT id_padre FROM Padres WHERE id_usuario = %s", (uid,))
+    resultado_padre = cursor.fetchone()
+
+    if resultado_padre:
+        id_padre = resultado_padre['id_padre']
+
+        # Insertar el nuevo alumno en la tabla Alumnos
+        cursor.execute("INSERT INTO Alumnos (nombre, id_usuario, id_padre, id_profesor) VALUES (%s, %s, %s, %s)",
+                       (nombre_alumno, uid, id_padre, 1))  # 1 es el id_profesor predeterminado
+        conexion.commit()
+
+        return jsonify({'message': 'Alumno registrado correctamente'}), 201
+    else:
+        return jsonify({'error': 'No se encontró un padre con el UID proporcionado'}), 404
 
 
 if __name__ == '__main__':
