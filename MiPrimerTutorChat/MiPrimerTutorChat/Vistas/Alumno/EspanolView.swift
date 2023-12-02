@@ -13,6 +13,7 @@ struct EspanolView: View {
 
     @State private var pregunta: Pregunta?
     @State private var opcionSeleccionada: String?
+    @State private var progreso: Double = 0 // Variable de estado para rastrear el progreso
 
     var body: some View {
         VStack {
@@ -35,6 +36,12 @@ struct EspanolView: View {
 
     func cargarContenidoPregunta(pregunta: Pregunta) -> some View {
         VStack {
+            HStack {
+                Gauge(value: progreso, in: 0...3) {
+                    Text("Progreso")
+                }
+                .padding()
+            }
             Image(pregunta.nombre_imagen)
                 .resizable()
                 .scaledToFit()
@@ -44,14 +51,14 @@ struct EspanolView: View {
 
             HStack {
                 Button("A)") {
-                    seleccionarOpcion("a")
+                    verificarRespuesta("a", correcta: pregunta.respuesta_correcta)
                 }
                 .font(.largeTitle)
                 .padding()
                 .buttonStyle(AButton())
 
                 Button("B)") {
-                    seleccionarOpcion("b")
+                    verificarRespuesta("b", correcta: pregunta.respuesta_correcta)
                 }
                 .font(.largeTitle)
                 .padding()
@@ -60,22 +67,24 @@ struct EspanolView: View {
 
             HStack {
                 Button("C)") {
-                    seleccionarOpcion("c")
+                    verificarRespuesta("c", correcta: pregunta.respuesta_correcta)
                 }
                 .font(.largeTitle)
                 .padding()
                 .buttonStyle(CButton())
 
                 Button("D)") {
-                    seleccionarOpcion("d")
+                    verificarRespuesta("d", correcta: pregunta.respuesta_correcta)
                 }
                 .font(.largeTitle)
                 .padding()
                 .buttonStyle(DButton())
             }
 
-            Text("Respuesta: \(opcionSeleccionada == pregunta.respuesta_correcta ? "Correcta" : "Incorrecta")")
-                .padding()
+            if let respuesta = opcionSeleccionada {
+                Text("Respuesta: \(respuesta == pregunta.respuesta_correcta ? "Correcta" : "Incorrecta")")
+                    .padding()
+            }
 
             HStack {
                 Button("Regresar") {
@@ -90,8 +99,11 @@ struct EspanolView: View {
         .padding()
     }
 
-    func seleccionarOpcion(_ opcion: String) {
+    func verificarRespuesta(_ opcion: String, correcta: String) {
         opcionSeleccionada = opcion
+        if opcion == correcta {
+            progreso += 1 // Incrementar el progreso si la respuesta es correcta
+        }
     }
 
     func obtenerPreguntaInicial() {
@@ -122,6 +134,7 @@ struct EspanolView: View {
         }.resume()
     }
 }
+
 
 struct PreguntaResponse: Decodable {
     let preguntas: [Pregunta]
