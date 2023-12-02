@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct ListaAlumnosView: View {
-    let nombresDeAlumnos = ["Alumno 1", "Alumno 2", "Alumno 3"]
-    @State private var alumnoSeleccionado = "Alumno 1"
     
+    @State private var uid = FirebaseManager.shared.auth.currentUser?.uid
+    @State private var nombresDeAlumnos: [String] = []
+    @State private var alumnoSeleccionado = ""
+
     var body: some View {
-        VStack{
+        VStack {
             Text("Lista Alumnos")
                 .font(.system(size: 36, weight: .heavy, design: .rounded))
                 .multilineTextAlignment(.center)
@@ -37,28 +39,45 @@ struct ListaAlumnosView: View {
             }
             .frame(height: 100)
             
-            
-            
             List {
-                Text("Nombre:")
-                    .font(.title)
-                
-                /*if !cuentasInfo.isEmpty {
-                    Text("No Cuenta:")
+                ForEach(nombresDeAlumnos, id: \.self) { nombre in
+                    Text("Nombre: \(nombre)")
                         .font(.title)
-                } else {
-                    Text("No Cuenta: No hay cuentas disponibles") // Muestra un mensaje si no hay cuentas
-                        .font(.title)
-                }*/
+                }
             }
         }
-        /*.onAppear {
-            obtenerClientes()
+        .onAppear {
+            obtenerListaAlumnos()
         }
-        .onChange(of: clienteSeleccionado) { selectedCliente in
-            obtenerDatosDelCliente()
-        }*/
+    }
 
+    func obtenerListaAlumnos() {
+        guard let uid = uid else {
+            print("Error: UID no disponible")
+            return
+        }
+
+        guard let url = URL(string: "http://127.0.0.1:8000/lista_alumnos?id_usuario_profesor=\(uid)") else {
+            print("Error: URL no válida")
+            return
+        }
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, error == nil else {
+                print("Error al cargar la lista de alumnos: \(error?.localizedDescription ?? "Desconocido")")
+                return
+            }
+
+            do {
+                let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                if let alumnos = json?["alumnos"] as? [[String: Any]] {
+                    nombresDeAlumnos = alumnos.map { $0["nombre"] as? String ?? "" }
+                    // Puedes agregar más lógica aquí según tus necesidades
+                }
+            } catch {
+                print("Error al decodificar la respuesta JSON: \(error.localizedDescription)")
+            }
+        }.resume()
     }
 }
 

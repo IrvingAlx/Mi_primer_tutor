@@ -98,6 +98,29 @@ def login_alumno():
     else:
         return jsonify({'message': 'No se encontró el alumno'}), 404
 
+@app.route('/lista_alumnos', methods=['GET'])
+def lista_alumnos():
+    # Recuperar el id_usuario del profesor desde los parámetros de la solicitud
+    id_usuario_profesor = request.args.get('id_usuario_profesor')
+
+    # Buscar el id_profesor en la tabla de Profesores
+    cursor.execute("SELECT id_profesor FROM Profesores WHERE id_usuario = %s", (id_usuario_profesor,))
+    resultado_profesor = cursor.fetchone()
+
+    if resultado_profesor:
+        id_profesor = resultado_profesor['id_profesor']
+
+        # Buscar los alumnos que tienen el id_profesor igual al id_profesor del profesor
+        cursor.execute("SELECT id_alumno, nombre FROM Alumnos WHERE id_profesor = %s", (id_profesor,))
+        resultado_alumnos = cursor.fetchall()
+
+        # Crear una lista de alumnos
+        lista_alumnos = [{'id_alumno': alumno['id_alumno'], 'nombre': alumno['nombre']} for alumno in resultado_alumnos]
+
+        return jsonify({'alumnos': lista_alumnos})
+    else:
+        return jsonify({'error': 'No se encontró el profesor'}), 404
+
 if __name__ == '__main__':
     app.run(debug=True,port=8000)
 
