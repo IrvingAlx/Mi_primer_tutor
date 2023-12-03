@@ -271,7 +271,43 @@ def obtener_puntuacion():
     else:
         return jsonify({'error': f'No se encontró el alumno con el nombre {nombre_alumno}'}), 404
 
+@app.route('/obtener_puntuacion_acumulada', methods=['POST'])
+def obtener_puntuacion_acumulada():
+    data = request.get_json()
+    nombre_alumno = data.get('nombre_alumno')
+    materia = data.get('materia')
 
+    # Buscar el id_alumno correspondiente al nombre del alumno
+    cursor.execute("SELECT id_alumno FROM Alumnos WHERE nombre = %s", (nombre_alumno,))
+    resultado_alumno = cursor.fetchone()
+
+    if resultado_alumno:
+        id_alumno = resultado_alumno['id_alumno']
+
+        # Buscar el id_nivel correspondiente a la materia
+        cursor.execute("SELECT id_nivel FROM Niveles WHERE area = %s", (materia,))
+        resultado_nivel = cursor.fetchone()
+
+        if resultado_nivel:
+            id_nivel = resultado_nivel['id_nivel']
+
+            # Consumir los resultados antes de la siguiente consulta
+            cursor.fetchall()
+
+            # Sumar los puntos acumulados para el alumno y nivel especificados
+            cursor.execute("SELECT SUM(puntos_acumulados) as total_puntos FROM Puntuacion WHERE id_alumno = %s AND id_nivel = %s", (id_alumno, id_nivel))
+
+            resultado_total_puntos = cursor.fetchone()
+
+            if resultado_total_puntos['total_puntos']:
+                total_puntos = resultado_total_puntos['total_puntos']
+                return jsonify({'total_puntos': total_puntos})
+            else:
+                return jsonify({'message': f'No hay registros de puntuación para el alumno {nombre_alumno} en la materia {materia}'}), 404
+        else:
+            return jsonify({'error': 'No se encontró el nivel para la materia especificada'}), 404
+    else:
+        return jsonify({'error': f'No se encontró el alumno con el nombre {nombre_alumno}'}), 404
         
 
 
