@@ -36,7 +36,7 @@ struct MenuAlumnoView: View {
                     .buttonStyle(GrowingButton())
                 
                     
-                NavigationLink("Inglés", destination: InglesView())
+                NavigationLink("Inglés", destination: InglesView(idAlumno: idAlumno))
                     .font(.system(size: 21, weight: .semibold))
                     .tint(.red)
                     .padding()

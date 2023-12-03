@@ -35,22 +35,22 @@ struct EspanolView: View {
             } else if preguntaActualIndex < preguntas.count {
                 cargarContenidoPregunta(pregunta: preguntas[preguntaActualIndex])
             } else {
-                if nivelActual > 1 {
+                if nivelActual > 2 {
                     Text("¡Felicidades! Has completado el nivel \(nivelActual)")
                         .padding()
                         .onAppear {
                             pasarAlSiguienteNivel()
                         }
                 } else {
-                        // Muestra un mensaje de felicitaciones y la opción de regresar al menú del alumno
+                    // Muestra un mensaje de felicitaciones y la opción de regresar al menú del alumno
                     VStack {
                         Text("¡Felicidades! Has completado todos los niveles.")
                             .font(.headline)
                             .padding()
-
+                        
                         Button("Regresar al Menú del Alumno") {
-                                // Acciones cuando se presiona el botón para regresar al menú del alumno
-                                // Puedes navegar a la vista del menú del alumno o realizar cualquier acción deseada.
+                            // Acciones cuando se presiona el botón para regresar al menú del alumno
+                            // Puedes navegar a la vista del menú del alumno o realizar cualquier acción deseada.
                         }
                         .padding()
                         .buttonStyle(GrowingButton()) // Reemplaza YourButtonStyle con el estilo de botón que estás utilizando
