@@ -44,13 +44,13 @@ struct MenuAlumnoView: View {
             }
                 
             HStack{
-                NavigationLink("Matematicas", destination: MatematicasView())
+                NavigationLink("Matematicas", destination: MatematicasView(idAlumno: idAlumno))
                     .font(.system(size: 21, weight: .semibold))
                     .tint(.red)
                     .padding()
                     .buttonStyle(GrowingButton())
                 
-                NavigationLink("General", destination: GeneralView())
+                NavigationLink("General", destination: GeneralView(idAlumno: idAlumno))
                     .font(.system(size: 21, weight: .semibold))
                     .tint(.red)
                     .padding()
