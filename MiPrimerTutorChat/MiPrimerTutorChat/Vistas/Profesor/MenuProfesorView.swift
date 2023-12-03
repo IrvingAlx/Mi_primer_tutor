@@ -88,6 +88,7 @@ struct MenuProfesorView: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden(true)
     }
     
     

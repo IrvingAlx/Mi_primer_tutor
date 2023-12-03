@@ -87,6 +87,7 @@ struct MenuPadresView: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden(true)
     }
 }
 

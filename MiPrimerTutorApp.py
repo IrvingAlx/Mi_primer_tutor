@@ -121,6 +121,56 @@ def lista_alumnos():
     else:
         return jsonify({'error': 'No se encontró el profesor'}), 404
 
+@app.route('/lista_materias', methods=['GET'])
+def lista_materias():
+    # Recupera el id_usuario del profesor desde los parámetros de la solicitud
+    id_usuario_profesor = request.args.get('id_usuario_profesor')
+
+    print(f"ID de usuario del profesor: {id_usuario_profesor}")
+
+    # Busca el id_profesor en la tabla de Profesores
+    cursor.execute("SELECT id_profesor FROM Profesores WHERE id_usuario = %s", (id_usuario_profesor,))
+    resultado_profesor = cursor.fetchone()
+
+    if resultado_profesor:
+        id_profesor = resultado_profesor['id_profesor']
+
+        print(f"ID de profesor encontrado: {id_profesor}")
+
+        # Busca los alumnos que tienen el id_profesor igual al id_profesor del profesor
+        cursor.execute("SELECT id_alumno, nombre FROM Alumnos WHERE id_profesor = %s", (id_profesor,))
+        resultado_alumnos = cursor.fetchall()
+
+        # Crea una lista de alumnos
+        lista_alumnos = [{'id_alumno': alumno['id_alumno'], 'nombre': alumno['nombre']} for alumno in resultado_alumnos]
+
+        print(f"Lista de alumnos: {lista_alumnos}")
+
+        # Inicializa la lista de materias
+        lista_materias = []
+
+        # Recorre la lista de alumnos y obtiene las materias para cada uno
+        for alumno in lista_alumnos:
+            id_alumno = alumno['id_alumno']
+
+            print(f"Procesando alumno con ID: {id_alumno}")
+
+            # Busca las materias que tienen el id_alumno igual al id_alumno del alumno
+            cursor.execute("SELECT DISTINCT area FROM Niveles WHERE id_nivel IN (SELECT DISTINCT id_nivel FROM Puntuacion WHERE id_alumno = %s)", (id_alumno,))
+            resultado_materias = cursor.fetchall()
+
+            # Agrega las materias a la lista
+            materias_alumno = [materia['area'] for materia in resultado_materias]
+            lista_materias.append({'id_alumno': id_alumno, 'materias': materias_alumno})
+
+        print(f"Lista de materias: {lista_materias}")
+
+        return jsonify({'alumnos_materias': lista_materias})
+    else:
+        print("Profesor no encontrado")
+        return jsonify({'error': 'No se encontró el profesor'}), 404
+
+
 @app.route('/preguntas_por_categoria', methods=['GET'])
 def preguntas_por_categoria():
     # Obtener parámetros de la solicitud
