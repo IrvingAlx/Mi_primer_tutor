@@ -10,16 +10,15 @@ import URLImage
 
 struct EspanolView: View {
     var idAlumno: Int
-
+    
     @State private var preguntas: [Pregunta] = []
     @State private var preguntaActualIndex: Int = 0
     @State private var opcionSeleccionada: String?
     @State private var progreso: Double = 0
-    @State private var nivelActual: Int = 1 // Variable de estado para rastrear el nivel actual
+    @State private var nivelActual: Int = 1
     @State private var nivelTransicionIniciada: Bool = false
     @State private var isLoading: Bool = true
-
-
+    let maximoNivel: Int = 3  // Reemplaza 5 con el número máximo de niveles que tienes
 
     var body: some View {
         VStack {
@@ -27,8 +26,8 @@ struct EspanolView: View {
                 .font(.system(size: 36, weight: .heavy, design: .rounded))
                 .multilineTextAlignment(.center)
                 .padding(20)
-
-            Text("Nivel \(nivelActual)") // Nuevo Text para mostrar el número de nivel actual
+            
+            Text("Nivel \(nivelActual)")
 
             if preguntas.isEmpty {
                 Text("Cargando preguntas...")
@@ -36,16 +35,32 @@ struct EspanolView: View {
             } else if preguntaActualIndex < preguntas.count {
                 cargarContenidoPregunta(pregunta: preguntas[preguntaActualIndex])
             } else {
-                Text("Fin de las preguntas del nivel \(nivelActual)")
-                    .padding()
-                    .onAppear {
-                        pasarAlSiguienteNivel()
+                if nivelActual > 1 {
+                    Text("¡Felicidades! Has completado el nivel \(nivelActual)")
+                        .padding()
+                        .onAppear {
+                            pasarAlSiguienteNivel()
+                        }
+                } else {
+                        // Muestra un mensaje de felicitaciones y la opción de regresar al menú del alumno
+                    VStack {
+                        Text("¡Felicidades! Has completado todos los niveles.")
+                            .font(.headline)
+                            .padding()
+
+                        Button("Regresar al Menú del Alumno") {
+                                // Acciones cuando se presiona el botón para regresar al menú del alumno
+                                // Puedes navegar a la vista del menú del alumno o realizar cualquier acción deseada.
+                        }
+                        .padding()
+                        .buttonStyle(GrowingButton()) // Reemplaza YourButtonStyle con el estilo de botón que estás utilizando
                     }
+                }
             }
         }
         .onAppear {
             if isLoading {
-                cargarPreguntas(area: "espanol", numeroNivel: 1)
+                cargarPreguntas(area: "espanol", numeroNivel: nivelActual)
             }
         }
     }
@@ -101,16 +116,6 @@ struct EspanolView: View {
                 Text("Respuesta: \(respuesta == pregunta.respuesta_correcta ? "Correcta" : "Incorrecta")")
                     .padding()
             }
-
-            /*HStack {
-                Button("Regresar") {
-                    // Acciones cuando se presiona Regresar
-                }
-                .font(.largeTitle)
-                .tint(.blue)
-                .padding()
-                .buttonStyle(GrowingButton())
-            }*/
         }
         .padding()
     }
@@ -119,13 +124,14 @@ struct EspanolView: View {
         opcionSeleccionada = opcion
         if opcion == correcta {
             progreso += 1 // Incrementar el progreso si la respuesta es correcta
-            guardarPuntuacion()
-            cargarSiguientePregunta()
+            guardarPuntuacion {
+                cargarSiguientePregunta()
+            }
         }
     }
 
     // Nueva función para guardar la puntuación
-    func guardarPuntuacion() {
+    func guardarPuntuacion(completion: @escaping () -> Void) {
         guard let url = URL(string: "http://127.0.0.1:8000/guardar_puntuacion") else {
             return
         }
@@ -135,9 +141,8 @@ struct EspanolView: View {
             "id_nivel": nivelActual,
             "puntos_acumulados": progreso
         ]
-        
-        print("Datos a enviar al servidor: ", puntuacionData) // Imprime los datos antes de enviarlos al servidor
 
+        print("Datos a enviar al servidor: ", puntuacionData)
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -166,29 +171,40 @@ struct EspanolView: View {
                 if let message = jsonResponse?["message"] as? String {
                     print("Respuesta del servidor: \(message)")
                 }
+                completion() // Llamar a la clausura de finalización después de que la respuesta se ha procesado
             } catch {
                 print("Error al decodificar la respuesta del servidor: \(error)")
             }
-        }.resume()
 
+            // Retrasar la ejecución de la siguiente acción para permitir que la conexión se estabilice
+            /*DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                self.cargarSiguientePregunta()
+            }*/
+
+        }.resume()
     }
+
 
 
     func cargarSiguientePregunta() {
         preguntaActualIndex += 1
-        opcionSeleccionada = nil // Restablecer la opción seleccionada al cargar una nueva pregunta
+        opcionSeleccionada = nil
 
-        if preguntaActualIndex >= preguntas.count {
-            // Si hemos alcanzado el final de las preguntas del nivel actual, pasa al siguiente nivel
+        if preguntaActualIndex < preguntas.count {
+            DispatchQueue.main.async {
+                self.cargarContenidoPregunta(pregunta: self.preguntas[self.preguntaActualIndex])
+            }
+        } else {
             pasarAlSiguienteNivel()
         }
     }
 
+
     func pasarAlSiguienteNivel() {
         nivelTransicionIniciada = true
         nivelActual += 1
-        preguntaActualIndex = 0 // Reiniciar el índice de la pregunta al pasar al siguiente nivel
-        progreso = 0 // Reiniciar el progreso al pasar a un nuevo nivel
+        preguntaActualIndex = 0
+        progreso = 0
 
         // Realizar la solicitud HTTP para obtener las preguntas del nuevo nivel
         guard let url = URL(string: "http://127.0.0.1:8000/preguntas_por_categoria?area=espanol&numero_nivel=\(nivelActual)") else {
@@ -201,6 +217,14 @@ struct EspanolView: View {
                     let respuesta = try JSONDecoder().decode(PreguntaResponse.self, from: data)
                     DispatchQueue.main.async {
                         self.preguntas = respuesta.preguntas
+
+                        // Asegurarse de que la carga de preguntas del siguiente nivel se haya completado
+                        self.nivelTransicionIniciada = false
+
+                        // Mostrar el mensaje de felicitaciones después de actualizar la interfaz de usuario
+                        if self.nivelActual <= self.maximoNivel {
+                            self.cargarContenidoPregunta(pregunta: self.preguntas[self.preguntaActualIndex])
+                        }
                     }
                 } catch {
                     print("Error al decodificar la respuesta: \(error)")
@@ -209,30 +233,8 @@ struct EspanolView: View {
                 print("Error en la solicitud HTTP: \(error)")
             }
         }.resume()
-        nivelTransicionIniciada = false
     }
 
-    func obtenerPreguntasIniciales() {
-        // Realizar la solicitud HTTP para obtener las preguntas iniciales del primer nivel
-        guard let url = URL(string: "http://127.0.0.1:8000/preguntas_por_categoria?area=espanol&numero_nivel=1") else {
-            return
-        }
-
-        URLSession.shared.dataTask(with: url) { data, _, error in
-            if let data = data {
-                do {
-                    let respuesta = try JSONDecoder().decode(PreguntaResponse.self, from: data)
-                    DispatchQueue.main.async {
-                        self.preguntas = respuesta.preguntas
-                    }
-                } catch {
-                    print("Error al decodificar la respuesta: \(error)")
-                }
-            } else if let error = error {
-                print("Error en la solicitud HTTP : \(error)")
-            }
-        }.resume()
-    }
     
     func cargarPreguntas(area: String, numeroNivel: Int) {
         guard let url = URL(string: "http://127.0.0.1:8000/preguntas_por_categoria?area=\(area)&numero_nivel=\(numeroNivel)") else {
