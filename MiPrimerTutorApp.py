@@ -146,6 +146,32 @@ def preguntas_por_categoria():
         return jsonify({'preguntas': lista_preguntas})
     else:
         return jsonify({'error': 'No se encontró la categoría'}), 404
+    
+@app.route('/guardar_puntuacion', methods=['POST'])
+def guardar_puntuacion():
+    datos = request.get_json()
+
+    print("Datos recibidos:", datos)  # Imprime los datos recibidos
+
+    id_alumno = datos.get('id_alumno')
+    id_nivel = datos.get('id_nivel')
+
+    # Convertir puntos_acumulados a punto flotante
+    puntos_acumulados = float(datos.get('puntos_acumulados'))
+
+    # Obtener la fecha actual como un objeto de fecha
+    fecha_completado = datetime.now().date()
+
+    # Imprimir el query antes de ejecutarlo
+    query = "INSERT INTO Puntuacion (fecha_completado, puntos_acumulados, id_alumno, id_nivel) VALUES (%s, %s, %s, %s)"
+    print("Query:", query % (fecha_completado, puntos_acumulados, id_alumno, id_nivel))
+
+    # Insertar la nueva puntuación en la tabla Puntuacion
+    cursor.execute(query, (fecha_completado, puntos_acumulados, id_alumno, id_nivel))
+    conexion.commit()
+
+    # Devolver una respuesta JSON indicando que la puntuación se ha guardado correctamente
+    return jsonify({'message': 'Puntuación guardada correctamente'}), 201
 
 if __name__ == '__main__':
     app.run(debug=True,port=8000)

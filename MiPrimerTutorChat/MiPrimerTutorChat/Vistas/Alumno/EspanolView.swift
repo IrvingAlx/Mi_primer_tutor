@@ -16,6 +16,10 @@ struct EspanolView: View {
     @State private var opcionSeleccionada: String?
     @State private var progreso: Double = 0
     @State private var nivelActual: Int = 1 // Variable de estado para rastrear el nivel actual
+    @State private var nivelTransicionIniciada: Bool = false
+    @State private var isLoading: Bool = true
+
+
 
     var body: some View {
         VStack {
@@ -40,7 +44,9 @@ struct EspanolView: View {
             }
         }
         .onAppear {
-            obtenerPreguntasIniciales()
+            if isLoading {
+                cargarPreguntas(area: "espanol", numeroNivel: 1)
+            }
         }
     }
 
@@ -96,7 +102,7 @@ struct EspanolView: View {
                     .padding()
             }
 
-            HStack {
+            /*HStack {
                 Button("Regresar") {
                     // Acciones cuando se presiona Regresar
                 }
@@ -104,7 +110,7 @@ struct EspanolView: View {
                 .tint(.blue)
                 .padding()
                 .buttonStyle(GrowingButton())
-            }
+            }*/
         }
         .padding()
     }
@@ -113,9 +119,60 @@ struct EspanolView: View {
         opcionSeleccionada = opcion
         if opcion == correcta {
             progreso += 1 // Incrementar el progreso si la respuesta es correcta
+            guardarPuntuacion()
             cargarSiguientePregunta()
         }
     }
+
+    // Nueva función para guardar la puntuación
+    func guardarPuntuacion() {
+        guard let url = URL(string: "http://127.0.0.1:8000/guardar_puntuacion") else {
+            return
+        }
+
+        let puntuacionData: [String: Any] = [
+            "id_alumno": idAlumno,
+            "id_nivel": nivelActual,
+            "puntos_acumulados": progreso
+        ]
+        
+        print("Datos a enviar al servidor: ", puntuacionData) // Imprime los datos antes de enviarlos al servidor
+
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: puntuacionData, options: .prettyPrinted)
+        } catch let error {
+            print("Error al serializar los datos de la puntuación: \(error)")
+            return
+        }
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error en la solicitud HTTP al guardar la puntuación: \(error)")
+                return
+            }
+
+            guard let data = data else {
+                print("No se recibieron datos en la respuesta.")
+                return
+            }
+
+            do {
+                let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                if let message = jsonResponse?["message"] as? String {
+                    print("Respuesta del servidor: \(message)")
+                }
+            } catch {
+                print("Error al decodificar la respuesta del servidor: \(error)")
+            }
+        }.resume()
+
+    }
+
 
     func cargarSiguientePregunta() {
         preguntaActualIndex += 1
@@ -128,6 +185,7 @@ struct EspanolView: View {
     }
 
     func pasarAlSiguienteNivel() {
+        nivelTransicionIniciada = true
         nivelActual += 1
         preguntaActualIndex = 0 // Reiniciar el índice de la pregunta al pasar al siguiente nivel
         progreso = 0 // Reiniciar el progreso al pasar a un nuevo nivel
@@ -151,6 +209,7 @@ struct EspanolView: View {
                 print("Error en la solicitud HTTP: \(error)")
             }
         }.resume()
+        nivelTransicionIniciada = false
     }
 
     func obtenerPreguntasIniciales() {
@@ -174,13 +233,37 @@ struct EspanolView: View {
             }
         }.resume()
     }
+    
+    func cargarPreguntas(area: String, numeroNivel: Int) {
+        guard let url = URL(string: "http://127.0.0.1:8000/preguntas_por_categoria?area=\(area)&numero_nivel=\(numeroNivel)") else {
+            return
+        }
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            DispatchQueue.main.async {
+                isLoading = false // Cambiar el estado de carga independientemente del resultado
+
+                guard let data = data, error == nil else {
+                    print("Error en la solicitud HTTP: \(error?.localizedDescription ?? "Error desconocido")")
+                    return
+                }
+
+                do {
+                    let respuesta = try JSONDecoder().decode(PreguntaResponse.self, from: data)
+                    preguntas = respuesta.preguntas
+                } catch {
+                    print("Error al decodificar la respuesta: \(error)")
+                }
+            }
+        }.resume()
+    }
 }
 
-struct PreguntaResponse: Decodable {
+struct PreguntaResponse: Codable {
     let preguntas: [Pregunta]
 }
 
-struct Pregunta: Decodable {
+struct Pregunta: Codable {
     let numero_pregunta: Int
     let nombre_imagen: String
     let respuesta_correcta: String
