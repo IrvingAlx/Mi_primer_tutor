@@ -171,6 +171,63 @@ def lista_materias():
         print("Profesor no encontrado")
         return jsonify({'error': 'No se encontró el profesor'}), 404
 
+@app.route('/lista_alumnos_padres', methods=['GET'])
+def lista_alumnos_padres():
+    # Recuperar el id_usuario del padre desde los parámetros de la solicitud
+    id_usuario_padre = request.args.get('id_usuario_padre')
+
+    # Buscar el id_padre en la tabla de Padres
+    cursor.execute("SELECT id_padre FROM Padres WHERE id_usuario = %s", (id_usuario_padre,))
+    resultado_padre = cursor.fetchone()
+
+    if resultado_padre:
+        id_padre = resultado_padre['id_padre']
+
+        # Buscar los alumnos que tienen el id_padre igual al id_padre del padre
+        cursor.execute("SELECT id_alumno, nombre FROM Alumnos WHERE id_padre = %s", (id_padre,))
+        resultado_alumnos = cursor.fetchall()
+
+        # Crear una lista de alumnos
+        lista_alumnos = [{'id_alumno': alumno['id_alumno'], 'nombre': alumno['nombre']} for alumno in resultado_alumnos]
+
+        return jsonify({'alumnos': lista_alumnos})
+    else:
+        return jsonify({'error': 'No se encontró el padre'}), 404
+
+@app.route('/lista_materias_padres', methods=['GET'])
+def lista_materias_padres():
+    # Recuperar el id_usuario del padre desde los parámetros de la solicitud
+    id_usuario_padre = request.args.get('id_usuario_padre')
+
+    # Buscar el id_padre en la tabla de Padres
+    cursor.execute("SELECT id_padre FROM Padres WHERE id_usuario = %s", (id_usuario_padre,))
+    resultado_padre = cursor.fetchone()
+
+    if resultado_padre:
+        id_padre = resultado_padre['id_padre']
+
+        # Buscar los alumnos que tienen el id_padre igual al id_padre del padre
+        cursor.execute("SELECT id_alumno, nombre FROM Alumnos WHERE id_padre = %s", (id_padre,))
+        resultado_alumnos = cursor.fetchall()
+
+        # Inicializar la lista de materias
+        lista_materias = []
+
+        # Recorrer la lista de alumnos y obtener las materias para cada uno
+        for alumno in resultado_alumnos:
+            id_alumno = alumno['id_alumno']
+
+            # Buscar las materias que tienen el id_alumno igual al id_alumno del alumno
+            cursor.execute("SELECT DISTINCT area FROM Niveles WHERE id_nivel IN (SELECT DISTINCT id_nivel FROM Puntuacion WHERE id_alumno = %s)", (id_alumno,))
+            resultado_materias = cursor.fetchall()
+
+            # Agregar las materias a la lista
+            materias_alumno = [materia['area'] for materia in resultado_materias]
+            lista_materias.append({'id_alumno': id_alumno, 'materias': materias_alumno})
+
+        return jsonify({'alumnos_materias': lista_materias})
+    else:
+        return jsonify({'error': 'No se encontró el padre'}), 404
 
 @app.route('/preguntas_por_categoria', methods=['GET'])
 def preguntas_por_categoria():
