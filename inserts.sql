@@ -33,9 +33,10 @@ INSERT INTO Preguntas (numero_pregunta, nombre_imagen, respuesta_correcta, id_ni
 INSERT INTO Preguntas (numero_pregunta, nombre_imagen, respuesta_correcta, id_nivel) VALUES (2, 'matematicas2', 'a', 6);
 INSERT INTO Preguntas (numero_pregunta, nombre_imagen, respuesta_correcta, id_nivel) VALUES (3, 'matematicas3', 'd', 6);
 
-INSERT INTO Preguntas (numero_pregunta, nombre_imagen, respuesta_correcta, id_nivel) VALUES (1, 'general1', 'd', 7);
-INSERT INTO Preguntas (numero_pregunta, nombre_imagen, respuesta_correcta, id_nivel) VALUES (2, 'general2', 'b', 7);
-INSERT INTO Preguntas (numero_pregunta, nombre_imagen, respuesta_correcta, id_nivel) VALUES (3, 'general3', 'c', 7);
-INSERT INTO Preguntas (numero_pregunta, nombre_imagen, respuesta_correcta, id_nivel) VALUES (1, 'general1', 'd', 8);
-INSERT INTO Preguntas (numero_pregunta, nombre_imagen, respuesta_correcta, id_nivel) VALUES (2, 'general2', 'b', 8);
-INSERT INTO Preguntas (numero_pregunta, nombre_imagen, respuesta_correcta, id_nivel) VALUES (3, 'general3', 'c', 8);
+
+INSERT INTO Preguntas (numero_pregunta, nombre_imagen, respuesta_correcta, id_nivel) VALUES (1, 'general1', 'd', 9);
+INSERT INTO Preguntas (numero_pregunta, nombre_imagen, respuesta_correcta, id_nivel) VALUES (2, 'general2', 'b', 9);
+INSERT INTO Preguntas (numero_pregunta, nombre_imagen, respuesta_correcta, id_nivel) VALUES (3, 'general3', 'c', 9);
+INSERT INTO Preguntas (numero_pregunta, nombre_imagen, respuesta_correcta, id_nivel) VALUES (1, 'general1', 'd', 10);
+INSERT INTO Preguntas (numero_pregunta, nombre_imagen, respuesta_correcta, id_nivel) VALUES (2, 'general2', 'b', 10);
+INSERT INTO Preguntas (numero_pregunta, nombre_imagen, respuesta_correcta, id_nivel) VALUES (3, 'general3', 'c', 10);
