@@ -1,6 +1,7 @@
 from datetime import datetime
 from flask import *
 import mysql.connector
+import urllib.parse
 
 class Cliente:
     def __init__(self, noCliente, nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, sexo):
@@ -222,6 +223,57 @@ def guardar_puntuacion():
 
     # Devolver una respuesta JSON indicando que la puntuación se ha guardado correctamente
     return jsonify({'message': 'Puntuación guardada correctamente'}), 201
+
+@app.route('/obtener_puntuacion', methods=['POST'])
+def obtener_puntuacion():
+    data = request.get_json()
+    nombre_alumno = data.get('nombre_alumno')
+    materia = data.get('materia')
+
+    # Buscar el id_alumno correspondiente al nombre del alumno
+    cursor.execute("SELECT id_alumno FROM Alumnos WHERE nombre = %s", (nombre_alumno,))
+    resultado_alumno = cursor.fetchone()
+
+    if resultado_alumno:
+        id_alumno = resultado_alumno['id_alumno']
+
+        # Buscar el id_nivel correspondiente a la materia
+        cursor.execute("SELECT id_nivel FROM Niveles WHERE area = %s", (materia,))
+        resultado_nivel = cursor.fetchone()
+
+        if resultado_nivel:
+            id_nivel = resultado_nivel['id_nivel']
+
+            # Consumir los resultados antes de la siguiente consulta
+            cursor.fetchall()
+
+            # Buscar todos los registros de puntuación para el alumno y nivel especificados
+            cursor.execute("SELECT id_puntuacion, fecha_completado, puntos_acumulados FROM Puntuacion WHERE id_alumno = %s AND id_nivel = %s", (id_alumno, id_nivel))
+            
+            # Fetch all results after executing the query
+            resultados_puntuacion = cursor.fetchall()
+
+            if resultados_puntuacion:
+                # Devolver todos los registros de puntuación
+                puntuaciones = [
+                    {
+                        'id_puntuacion': row['id_puntuacion'],
+                        'fecha_completado': row['fecha_completado'],
+                        'puntos_acumulados': row['puntos_acumulados']
+                    }
+                    for row in resultados_puntuacion
+                ]
+                return jsonify({'puntuaciones': puntuaciones})
+            else:
+                return jsonify({'message': f'No hay registros de puntuación para el alumno {nombre_alumno} en la materia {materia}'}), 404
+        else:
+            return jsonify({'error': 'No se encontró el nivel para la materia especificada'}), 404
+    else:
+        return jsonify({'error': f'No se encontró el alumno con el nombre {nombre_alumno}'}), 404
+
+
+        
+
 
 if __name__ == '__main__':
     app.run(debug=True,port=8000)
